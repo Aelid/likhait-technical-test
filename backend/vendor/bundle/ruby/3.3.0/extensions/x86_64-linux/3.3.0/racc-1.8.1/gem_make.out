@@ -1,0 +1,18 @@
+current directory: /rails/vendor/bundle/ruby/3.3.0/gems/racc-1.8.1/ext/racc/cparse
+/usr/local/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /rails/vendor/bundle/ruby/3.3.0/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20260624-7-dddacm sitelibdir\=./.gem.20260624-7-dddacm clean
+
+current directory: /rails/vendor/bundle/ruby/3.3.0/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20260624-7-dddacm sitelibdir\=./.gem.20260624-7-dddacm
+compiling cparse.c
+linking shared-object racc/cparse.so
+
+current directory: /rails/vendor/bundle/ruby/3.3.0/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20260624-7-dddacm sitelibdir\=./.gem.20260624-7-dddacm install
+/usr/bin/install -c -m 0755 cparse.so ./.gem.20260624-7-dddacm/racc
+
+current directory: /rails/vendor/bundle/ruby/3.3.0/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20260624-7-dddacm sitelibdir\=./.gem.20260624-7-dddacm clean
