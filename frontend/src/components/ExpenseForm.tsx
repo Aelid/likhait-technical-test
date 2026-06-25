@@ -79,12 +79,17 @@ export function ExpenseForm({
         required
       />
 
+ 
       <TextField
+      /**
+ * Restrict date selection to today or earlier
+ */
         label="Date"
         type="date"
         value={formData.date}
         onChange={(e) => handleChange("date", e.target.value)}
         error={errors.date}
+        max={new Date().toISOString().split("T")[0]}
         fullWidth
         required
       />
