@@ -40,10 +40,11 @@ export function ExpenseForm({
     marginTop: "0.5rem",
   };
 
+  // Use API-provided categories so the form includes custom user-created options
   const categoryOptions = categories.map((category) => ({
-  value: category.name,
-  label: category.name,
-}));
+    value: category.name,
+    label: category.name,
+  }));
 
   return (
     <form onSubmit={handleSubmit} style={formStyle}>

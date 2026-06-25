@@ -4,6 +4,7 @@ class Api::CategoriesController < ApplicationController
     render json: categories
   end
 
+  # Persist a custom category created from the category management modal
   def create
     category = Category.new(category_params)
 

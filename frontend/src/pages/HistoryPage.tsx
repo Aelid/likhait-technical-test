@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  getExpenses,
+  createCategory,
   createExpense,
   fetchCategories,
-  createCategory,
+  getExpenses,
 } from "../services/api";
 import { Expense, ExpenseFormData } from "../types";
 import YearNavigation from "../components/YearNavigation";
@@ -11,7 +11,7 @@ import { MonthNavigation } from "../components/MonthNavigation";
 import CategoryBreakdown from "../components/CategoryBreakdown";
 import { CalendarExpenseTable } from "../components/CalendarExpenseTable";
 import { ExpenseForm } from "../components/ExpenseForm";
-import { Modal, Button, TextField } from "../vibes";
+import { Button, Modal, TextField } from "../vibes";
 import { COLORS } from "../constants/colors";
 
 const HistoryPage: React.FC = () => {
@@ -22,7 +22,7 @@ const HistoryPage: React.FC = () => {
   const [categoryName, setCategoryName] = useState("");
   const [categoriesList, setCategoriesList] = useState<
     Array<{ id: number; name: string }>
->([]);
+  >([]);
 
   // Get year and month from URL params, default to current date if not provided
   const getInitialYearMonth = () => {
@@ -56,9 +56,9 @@ const HistoryPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-  fetchExpenses();
-  loadCategories();
-}, [selectedYear, selectedMonth]);
+    fetchExpenses();
+    loadCategories();
+  }, [selectedYear, selectedMonth]);
 
   const fetchExpenses = async () => {
     try {
@@ -72,14 +72,15 @@ const HistoryPage: React.FC = () => {
     }
   };
 
-const loadCategories = async () => {
-  try {
-    const data = await fetchCategories();
-    setCategoriesList(data);
-  } catch (error) {
-    console.error("Error fetching categories:", error);
-  }
-};
+  // Load categories from the backend so newly created categories can be reused
+  const loadCategories = async () => {
+    try {
+      const data = await fetchCategories();
+      setCategoriesList(data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
 
   const handleYearChange = (year: number) => {
     setSelectedYear(year);
@@ -102,20 +103,21 @@ const loadCategories = async () => {
     }
   };
 
+  // Create a category and refresh the dropdown options immediately after save
   const handleAddCategory = async () => {
-  const trimmedName = categoryName.trim();
+    const trimmedName = categoryName.trim();
 
-  if (!trimmedName) return;
+    if (!trimmedName) return;
 
-  try {
-    await createCategory(trimmedName);
-    setCategoryName("");
-    setIsCategoryModalOpen(false);
-    await loadCategories();
-  } catch (error) {
-    console.error("Error creating category:", error);
-  }
-};
+    try {
+      await createCategory(trimmedName);
+      setCategoryName("");
+      setIsCategoryModalOpen(false);
+      await loadCategories();
+    } catch (error) {
+      console.error("Error creating category:", error);
+    }
+  };
 
   // Calculate category breakdown
   const categoryData = expenses.reduce(
@@ -182,16 +184,19 @@ const loadCategories = async () => {
             currentYear={selectedYear}
             onYearChange={handleYearChange}
           />
-
         </div>
+
         <div style={{ display: "flex", gap: "12px" }}>
-  <Button variant="secondary" onClick={() => setIsCategoryModalOpen(true)}>
-    Add Category
-  </Button>
-  <Button variant="primary" onClick={() => setIsModalOpen(true)}>
-    Add Expense
-  </Button>
-</div>
+          <Button
+            variant="secondary"
+            onClick={() => setIsCategoryModalOpen(true)}
+          >
+            Add Category
+          </Button>
+          <Button variant="primary" onClick={() => setIsModalOpen(true)}>
+            Add Expense
+          </Button>
+        </div>
       </div>
 
       <MonthNavigation
@@ -226,42 +231,41 @@ const loadCategories = async () => {
         title="Add New Expense"
       >
         <ExpenseForm
-  categories={categoriesList}
-  onSubmit={handleAddExpense}
-  onCancel={() => setIsModalOpen(false)}
-/>
+          categories={categoriesList}
+          onSubmit={handleAddExpense}
+          onCancel={() => setIsModalOpen(false)}
+        />
       </Modal>
+
       <Modal
-  isOpen={isCategoryModalOpen}
-  onClose={() => setIsCategoryModalOpen(false)}
-  title="Add New Category"
->
-  <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-    <TextField
-      label="Category name"
-      type="text"
-      placeholder="Enter category name"
-      value={categoryName}
-      onChange={(e) => setCategoryName(e.target.value)}
-      fullWidth
-      required
-    />
-
-    <div style={{ display: "flex", gap: "0.5rem" }}>
-      <Button variant="primary" onClick={handleAddCategory} fullWidth>
-        Add Category
-      </Button>
-
-      <Button
-        variant="secondary"
-        onClick={() => setIsCategoryModalOpen(false)}
+        isOpen={isCategoryModalOpen}
+        onClose={() => setIsCategoryModalOpen(false)}
+        title="Add New Category"
       >
-        Cancel
-      </Button>
-    </div>
-  </div>
-</Modal>
+        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+          <TextField
+            label="Category name"
+            type="text"
+            placeholder="Enter category name"
+            value={categoryName}
+            onChange={(e) => setCategoryName(e.target.value)}
+            fullWidth
+            required
+          />
 
+          <div style={{ display: "flex", gap: "0.5rem" }}>
+            <Button variant="primary" onClick={handleAddCategory} fullWidth>
+              Add Category
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => setIsCategoryModalOpen(false)}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };
