@@ -45,9 +45,15 @@ export function useExpenseForm({ initialData, onSubmit }: UseExpenseFormProps) {
       newErrors.category = "Category is required";
     }
 
+/**
+ * Prevent users from creating expenses with a future date
+ */
+
     if (!formData.date) {
       newErrors.date = "Date is required";
-    }
+    } else if (formData.date > new Date().toISOString().split("T")[0]) {
+  newErrors.date = "Expense date cannot be in the future";
+}
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
